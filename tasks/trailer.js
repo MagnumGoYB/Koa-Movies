@@ -2,7 +2,7 @@ const cp = require('child_process')
 const path = require('path')
 
 ;(async () => {
-    const script = path.resolve(__dirname, '../crawler/trailer-list')
+    const script = path.resolve(__dirname, '../crawler/video')
     const child = cp.fork(script, [])
     let invoked = false
 
@@ -23,8 +23,6 @@ const path = require('path')
     })
 
     child.on('message', data => {
-        let result = data.result
-
-        console.log(result)
+        console.log(data)
     })
 })()
