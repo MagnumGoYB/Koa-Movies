@@ -6,8 +6,7 @@ async function fetchMovie(item) {
     return res
 }
 
-;
-(async () => {
+;(async () => {
     let movies = [{
         doubanId: 25964071,
         title: '夏洛特烦恼',
