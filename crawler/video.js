@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 
 const detailUrl = `https://movie.douban.com/subject/`
-const doubanId = `26728669`
+const doubanId = `26374197`
 const videoUrl = `https://movie.douban.com/trailer/245301`
 
 const sleep = time => new Promise(resolve => {
