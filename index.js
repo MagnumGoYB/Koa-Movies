@@ -3,6 +3,12 @@ const static = require('koa-static')
 const views = require('koa-views')
 const path = require('path')
 
+const { connect } = require('./database/init')
+
+;(async () => {
+    await connect()
+})()
+
 const app = new Koa()
 
 app.use(views(path.resolve(__dirname, './views'), {

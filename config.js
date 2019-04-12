@@ -1,4 +1,5 @@
 module.exports = {
+    'mongodb': 'mongodb://localhost/koa-movies',
     'qiniu': {
         'Bucket': 'koa-movies',
         'Domain': 'http://pptr7pzaw.bkt.clouddn.com/',
