@@ -1,52 +1,105 @@
 const request = require('request-promise-native')
+const mongoose = require('mongoose')
+const Movie = mongoose.model('Movie')
+const Category = mongoose.model('Category')
 
 async function fetchMovie(item) {
-    const url = `http://api.douban.com/v2/movie/subject/${item.doubanId}`
+    const url = `http://api.douban.com/v2/movie/${item.doubanId}`
     const res = await request(url)
-    return res
+
+    let body 
+
+    try {
+        body = JSON.parse(res)
+    } catch (err) {
+        console.log(err)
+    }
+
+    return body
 }
 
 ;(async () => {
-    let movies = [{
-        doubanId: 25964071,
-        title: '夏洛特烦恼',
-        rate: 7.5,
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p2264377763.jpg'
-    },
-    {
-        doubanId: 1929463,
-        title: '少年派的奇幻漂流',
-        rate: 9,
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p1784592701.jpg'
-    },
-    {
-        doubanId: 1866479,
-        title: '复仇者联盟',
-        rate: 8.1,
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p1524359776.jpg'
-    },
-    {
-        doubanId: 11026735,
-        title: '超能陆战队',
-        rate: 8.6,
-        poster: 'https://img1.doubanio.com/view/photo/l_ratio_poster/public/p2224568669.jpg'
-    },
-    {
-        doubanId: 1299398,
-        title: '大话西游之月光宝盒',
-        rate: 8.9,
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p1280323646.jpg'
-    }]
+    let movies = await Movie.find({
+        $or: [
+            { title: '' },
+            { summary: { $exists: false } },
+            { summary: '' },
+            { summary: null },
+            { year: { $exists: false } }
+        ]
+    })
 
-    movies.map(async movie => {
+    for(let i = 0; i < cmovies.length; i++) {
+        let movie = movies[i]
         let movieData = await fetchMovie(movie)
 
-        try {
-            movieData = JSON.parse(movieData)
-            console.log(movieData.genres)
-            console.log(movieData.summary)
-        } catch (error) {
-            console.log(error)
+        if (movieData) {
+            let tags = movieData.tags || []
+
+            movie.tags = movie.tags || []
+            movie.title = movieData.title || ''
+            movie.summary = movieData.summary || ''
+
+            if (movieData.attrs) {
+                movie.movieTypes = movieData.attrs.movie_type || []
+                movie.year = movieData.attrs.year[0] || 2500
+
+                for (let i = 0; i < movie.movieTypes.length; i++) {
+                    let item = movie.movieTypes[i]
+                    let cat = await Category.findOne({
+                        name: item
+                    })
+
+                    if (!cat) {
+                        cat = new Category({
+                            name: item,
+                            movies: [movie._id]
+                        })
+                    } else {
+                        if (cat.movies.indexOf(movie._id) === -1) {
+                            cat.movies.push(movie._id)
+                        }
+                    }
+
+                    await cat.save()
+
+                    if (!movie.category) {
+                        movie.category.push(cat._id)
+                    } else {
+                        if (movie.category.indexOf(cat._id) === -1) {
+                            movie.category.push(cat._id)
+                        }
+                    }
+                }
+
+                let dates = movieData.attrs.pubdate || []
+                let pubdates = []
+
+                dates.map(item => {
+                    if (item && item.split('(').length > 0) {
+                        let parts = item.split('(')
+                        let date = parts[0]
+                        let country = '未知'
+
+                        if (parts[1]) {
+                            country = parts[1].split(')')[0]
+                        }
+
+                        pubdates.push({
+                            date: new Date(date),
+                            country
+                        })
+                    }
+                })
+
+                movie.pubdate = pubdates
+            }
+
+            tags.forEach(tag => {
+                movie.tags.push(tag.name)
+            })
+            
+            await movie.save()
         }
-    })
+    }
 })()
