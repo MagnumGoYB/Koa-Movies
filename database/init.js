@@ -12,6 +12,23 @@ exports.initSchemas = () => {
     glob.sync(path.resolve(__dirname, './schema', '**/*.js')).forEach(require)
 }
 
+exports.initAdmin = async () => {
+    const User = mongoose.model('User')
+    let user = await User.findOne({
+        username: 'root'
+    })
+
+    if (!user) {
+        const user = new User({
+            username: 'root',
+            password: 'root123'
+        })
+
+        await user.save()
+    }
+
+}
+
 exports.connect = () => {
     const opts = {
         useNewUrlParser: true,
@@ -51,14 +68,6 @@ exports.connect = () => {
         })
 
         mongoose.connection.once('open', () => {
-            
-            // const Dog = mongoose.model('Dog', { name: String })
-            // const doga = new Dog({ name: '阿拉法' })
-
-            // doga.save().then(() => {
-            //     console.log('汪~')
-            // })
-            
             resolve()
             console.log('数据库连接成功！')
         })

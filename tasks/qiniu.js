@@ -1,6 +1,9 @@
 const qiniu = require('qiniu')
 const nanoid = require('nanoid')
 
+const mongoose = require('mongoose')
+const Movie = mongoose.model('Movie')
+
 const config = require('../config')
 
 const bucket = config.qiniu.Bucket
@@ -26,15 +29,17 @@ const uploadToQiniu = async (url, key) => {
 }
 
 ;(async () => {
-    let movies = [{
-        video: 'http://vt1.doubanio.com/201904121036/4b745f714b8555ac8e627ec6a9b6a1aa/view/movie/M/402400540.mp4',
-        doubanId: '26374197',
-        poster: 'https://img3.doubanio.com/view/photo/l_ratio_poster/public/p2542867516.jpg',
-        cover: 'https://img1.doubanio.com/img/trailer/medium/2542292089.jpg'
-    }]
+    let movies = await Movie.find({
+        $or: [
+            { videoKey: { $exists: false } },
+            { videoKey: null },
+            { videoKey: '' }
+        ]
+    })
 
-    movies.map(async movie => {
-        if (movie.video && !movie.key) {
+    for (let i = 0; i < movies.length; i++) {
+        let movie = movies[i]
+        if (movie.video && !movie.videoKey) {
             try {
                 let videoData = await uploadToQiniu(movie.video, nanoid() + '.mp4')
                 let coverData = await uploadToQiniu(movie.cover, nanoid() + '.jpg')
@@ -50,10 +55,10 @@ const uploadToQiniu = async (url, key) => {
                     movie.posterKey = posterData.key
                 }
 
-                console.log(movie)
+                await movie.save()
             } catch (error) {
                 console.log(error)
             }
         }
-    })
+    }
 })()
