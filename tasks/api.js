@@ -29,7 +29,7 @@ async function fetchMovie(item) {
         ]
     })
 
-    for(let i = 0; i < cmovies.length; i++) {
+    for(let i = 0; i < movies.length; i++) {
         let movie = movies[i]
         let movieData = await fetchMovie(movie)
 

@@ -22,30 +22,14 @@ const userSchema = new Schema({
         required: true,
         default: 0
     },
-    lockUntil: Number,
-    meta: {
-        createdAt: {
-            type: Date,
-            default: Date.now()
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now()
-        }
-    }
+    lockUntil: Number
+}, {
+    versionKey: false,
+    timestamps: true
 })
 
 userSchema.virtual('isLocked').get(function () {
     return !!(this.lockUntil && this.lockUntil > Date.now())
-})
-
-userSchema.pre('save', function (next) {
-    if (this.isNew) {
-        this.meta.createdAt = this.meta.updatedAt = Date.now()
-    } else {
-        this.meta.updatedAt = Date.now()
-    }
-    next()
 })
 
 userSchema.pre('save', function (next) {

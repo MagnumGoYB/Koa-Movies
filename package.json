@@ -1,5 +1,5 @@
 {
-  "name": "Koa-Movies",
+  "name": "koa-movies-trailer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MagnumGoYB/islearn.git"
+    "url": "git+https://github.com/MagnumGoYB/Koa-Movies.git"
   },
   "author": "MagnumGoYB",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MagnumGoYB/islearn/issues"
+    "url": "https://github.com/MagnumGoYB/Koa-Movies/issues"
   },
-  "homepage": "https://github.com/MagnumGoYB/islearn#readme",
+  "homepage": "https://github.com/MagnumGoYB/Koa-Movies#readme",
   "dependencies": {
     "bcrypt": "^3.0.5",
     "glob": "^7.1.3",

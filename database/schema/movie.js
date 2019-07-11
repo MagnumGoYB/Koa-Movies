@@ -22,27 +22,10 @@ const movieSchema = new Schema({
     coverKey: String,
     pubdate: Mixed,
     year: Number,
-    movieTypes: [String],
-    tags: Array,
-    meta: {
-        createdAt: {
-            type: Date,
-            default: Date.now()
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now()
-        }
-    }
-})
-
-movieSchema.pre('save', function (next) {
-    if (this.isNew) {
-        this.meta.createdAt = this.meta.updatedAt = Date.now()
-    } else {
-        this.meta.updatedAt = Date.now()
-    }
-    next()
+    genre: [String]
+}, {
+    versionKey: false,
+    timestamps: true
 })
 
 mongoose.model('Movie', movieSchema)

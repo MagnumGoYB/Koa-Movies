@@ -2,7 +2,6 @@ const Koa = require('koa')
 const static = require('koa-static')
 const views = require('koa-views')
 const path = require('path')
-const mongoose = require('mongoose')
 
 const { initSchemas, initAdmin, connect } = require('./database/init')
 
@@ -13,9 +12,7 @@ const { initSchemas, initAdmin, connect } = require('./database/init')
     await initAdmin()
 
     // require('./tasks/movie')
-    // require('./tasks/api')
-    // require('./tasks/trailer')
-    // require('./tasks/qiniu')
+    require('./tasks/qiniu')
 })()
 
 const app = new Koa()
