@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer')
 
-const detailUrl = `https://movie.douban.com/subject/`
+const SUBJECT_URL = `https://movie.douban.com/subject/`
 
 const sleep = time => new Promise(resolve => {
     setTimeout(resolve, time)
@@ -17,7 +17,7 @@ process.on('message', async movies => {
     for (let i = 0; i < movies.length; i++) {
         let doubanId = movies[i].doubanId
 
-        await page.goto(detailUrl + doubanId, {
+        await page.goto(SUBJECT_URL + doubanId, {
             waitUntil: 'networkidle2'
         })
 
@@ -52,19 +52,17 @@ process.on('message', async movies => {
             video = await page.evaluate(() => {
                 var $ = window.$
                 var it = $('source')
-
                 if (it && it.length > 0) {
                     return it.attr('src')
                 }
-
                 return null
             })
         }
 
         const data = {
-            video,
             doubanId,
-            cover: result.cover
+            cover: result.cover,
+            video
         }
 
         process.send(data)
@@ -72,5 +70,4 @@ process.on('message', async movies => {
 
     browser.close()
     process.exit(0)
-
 })

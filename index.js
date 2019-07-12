@@ -9,9 +9,11 @@ const { initSchemas, initAdmin, connect } = require('./database/init')
     await connect()
     initSchemas()
 
-    await initAdmin()
+    // await initAdmin()
 
-    // require('./tasks/movie')
+    // require('./tasks/movie-list')
+    // require('./tasks/movie-subject')
+    // require('./tasks/movie-video')
     require('./tasks/qiniu')
 })()
 

@@ -7,6 +7,7 @@ const Movie = mongoose.model('Movie')
 const config = require('../config')
 
 const bucket = config.qiniu.Bucket
+const domain = config.qiniu.Domain
 const mac = new qiniu.auth.digest.Mac(config.qiniu.accessKey, config.qiniu.secretKey)
 
 const qiniuConf = new qiniu.conf.Config()
