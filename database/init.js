@@ -51,7 +51,7 @@ exports.connect = () => {
                 console.log('正在重连数据库...')
                 mongoose.connect(db, opts)
             } else {
-                throw new Error('数据库挂了兄弟！')
+                throw new Error('数据库连接失败！')
             }
         })
 
@@ -63,7 +63,7 @@ exports.connect = () => {
                 mongoose.connect(db, opts)
             } else {
                 reject(err)
-                throw new Error('数据库挂了兄弟！')
+                throw new Error('数据库连接失败！')
             }
         })
 
